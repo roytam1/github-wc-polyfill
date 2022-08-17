@@ -234,14 +234,9 @@ const pfFollowUp = `(function () {
                 // flag "s" is broken in SeaMonkey
                 /:host(-context)?(?:\\(([\\s\\S]+?)\\))?/g,
                 function ($, context, selectors) {
-                  if (context === undefined && selectors === undefined)
-                    return tagName;
-                  if (context)
-                    return \`:-moz-any(\${selectors}) \${tagName}\`;
-                  let res = [];
-                  for (let selector of selectors.split(","))
-                    res.push(tagName + selector);
-                  return \`:-moz-any(\${res.join(", ")})\`;
+                  return !context ? !selectors ? tagName :
+                      \`\${tagName}:-moz-any(\${selectors})\` :
+                      \`:-moz-any(\${selectors}) \${tagName}\`;
                 }) + style;
           }
         }
@@ -275,9 +270,9 @@ const pfFollowUp = `(function () {
     function addCEEventListener (type, listener, options) {
       const target = this, parent = target.parentNode,
             ael = EventTarget.prototype.addEventListener;
-      if (parent && type=="click" && parent.localName==="button") {
-        let fwd = clickForwarder.get(parent);
-        if (typeof fwd==="undefined") {
+      let fwd = null;
+      if (parent && type==="click" && parent.localName==="button") {
+        if (typeof (fwd=clickForwarder.get(parent))==="undefined") {
           fwd = (event) => {target.dispatchEvent(new Event(event.type))};
           clickForwarder.set(parent, fwd);
         }
@@ -288,15 +283,18 @@ const pfFollowUp = `(function () {
     function removeCEEventListener (type, listener, options) {
       const target = this, parent = target.parentNode,
             rel = EventTarget.prototype.removeEventListener;
-      if (parent) {
-        const fwd = clickForwarder.get(parent);
-        if (typeof fwd!=="undefined") {
-          rel.call(parent, type, fwd, options);
-        }
+      let fwd = null;
+      if (parent && typeof (fwd=clickForwarder.get(parent))!=="undefined") {
+        rel.call(parent, type, fwd, options);
       }
       rel.call(target, type, listener, options);
     }
-    const CSS = document.createElement("style"),
+    const observer = new MutationObserver(function(mutations) {
+            for (const {target, attributeName, oldValue} of mutations) {
+              target.attributeChangedCallback(attributeName, oldValue, target.getAttribute(attributeName));
+            }
+          }),
+          CSS = document.createElement("style"),
           cssHashSet = new Set(),
           clickForwarder = new Map(),
           oldCED = customElements.define,
@@ -318,7 +316,7 @@ const pfFollowUp = `(function () {
         button.removeAttribute("disabled");
     }, {once: true});
 }());`;
-const hashFollowUp = "'sha256-SMimu3DSYjxabM7PO8GAdihB4lO9ZqnRwXx4Qu4wNOA='";
+const hashFollowUp = "'sha256-+eYSuiUT4vFULiKEOsbWbgX6fUHW/9QljOozK93OsCk='";
 const customElements = `(function(){'use strict';var n=window.Document.prototype.createElement,p=window.Document.prototype.createElementNS,aa=window.Document.prototype.importNode,ba=window.Document.prototype.prepend,ca=window.Document.prototype.append,da=window.DocumentFragment.prototype.prepend,ea=window.DocumentFragment.prototype.append,q=window.Node.prototype.cloneNode,r=window.Node.prototype.appendChild,t=window.Node.prototype.insertBefore,u=window.Node.prototype.removeChild,v=window.Node.prototype.replaceChild,w=Object.getOwnPropertyDescriptor(window.Node.prototype,
 "textContent"),y=window.Element.prototype.attachShadow,z=Object.getOwnPropertyDescriptor(window.Element.prototype,"innerHTML"),A=window.Element.prototype.getAttribute,B=window.Element.prototype.setAttribute,C=window.Element.prototype.removeAttribute,D=window.Element.prototype.getAttributeNS,E=window.Element.prototype.setAttributeNS,F=window.Element.prototype.removeAttributeNS,G=window.Element.prototype.insertAdjacentElement,H=window.Element.prototype.insertAdjacentHTML,fa=window.Element.prototype.prepend,
 ha=window.Element.prototype.append,ia=window.Element.prototype.before,ja=window.Element.prototype.after,ka=window.Element.prototype.replaceWith,la=window.Element.prototype.remove,ma=window.HTMLElement,I=Object.getOwnPropertyDescriptor(window.HTMLElement.prototype,"innerHTML"),na=window.HTMLElement.prototype.insertAdjacentElement,oa=window.HTMLElement.prototype.insertAdjacentHTML;var pa=new Set;"annotation-xml color-profile font-face font-face-src font-face-uri font-face-format font-face-name missing-glyph".split(" ").forEach(function(a){return pa.add(a)});function qa(a){var b=pa.has(a);a=/^[a-z][.0-9_a-z]*-[-.0-9_a-z]*$/.test(a);return!b&&a}var ra=document.contains?document.contains.bind(document):document.documentElement.contains.bind(document.documentElement);
@@ -390,6 +388,9 @@ var httpObserver = {
               if (isSeaMonkey) {
                 csp = csp.replace("script-src ", "script-src github.com gist.github.com " + hashSeaMonkey + " ");
                 csp = csp.replace("default-src 'none'", "default-src github.com gist.github.com");
+              }
+              if (subject.URI.host == "github.com" || subject.URI.host == "gist.github.com") {
+                csp = csp.replace("connect-src ", "connect-src objects.githubusercontent.com codeload.github.com ");
               }
             }
             subject.setResponseHeader("Content-Security-Policy", csp, false);
