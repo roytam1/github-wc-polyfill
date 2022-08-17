@@ -2,7 +2,7 @@
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
     <em:id>github-wc-polyfill@Off.JustOff</em:id>
-    <em:version>1.2.19</em:version>
+    <em:version>1.2.19.1</em:version>
     <em:type>2</em:type>
     <em:bootstrap>true</em:bootstrap>
     <em:strictCompatibility>true</em:strictCompatibility>
@@ -13,25 +13,44 @@
     <em:contributor>misteuk</em:contributor>
     <em:homepageURL>https://github.com/JustOff/github-wc-polyfill/</em:homepageURL>
     <em:updateURL>https://raw.githubusercontent.com/JustOff/github-wc-polyfill/master/update.xml</em:updateURL>
+    <!-- Palemoon -->
     <em:targetApplication>
       <Description>
       <em:id>{8de7fcbb-c55c-4fbe-bfc5-fc555c87dbc4}</em:id>
-      <em:minVersion>28.14.0</em:minVersion>
-      <em:maxVersion>29.*</em:maxVersion>
+      <em:minVersion>28.10.0</em:minVersion>
+      <em:maxVersion>31.*</em:maxVersion>
       </Description>
     </em:targetApplication>
+    <!-- Firefox/Basilisk -->
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>52.9.2020.10.05</em:minVersion>
-        <em:maxVersion>52.9.2022.*</em:maxVersion>
+        <em:minVersion>52.9.0</em:minVersion>
+        <em:maxVersion>55.*</em:maxVersion>
       </Description>
     </em:targetApplication>
+    <!-- SeaMonkey -->
     <em:targetApplication>
       <Description>
         <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
-        <em:minVersion>2.53.4</em:minVersion>
-        <em:maxVersion>2.53.*</em:maxVersion>
+        <em:minVersion>2.49.0</em:minVersion>
+        <em:maxVersion>2.57.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+    <!-- BNavigator -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{a3210b97-8e8a-4737-9aa0-aa0e607640b9}</em:id>
+        <em:minVersion>0.9.0a1</em:minVersion>
+        <em:maxVersion>1.0.0a1</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+    <!-- Iceape-UXP -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{9184b6fe-4a5c-484d-8b4b-efbfccbfb514}</em:id>
+        <em:minVersion>52.0</em:minVersion>
+        <em:maxVersion>52.*</em:maxVersion>
       </Description>
     </em:targetApplication>
   </Description>
