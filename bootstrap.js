@@ -303,9 +303,10 @@ const pfFollowUp = `(function () {
                              "header", "main", "nav", "p", "section", "span"]);
     document.head.appendChild(CSS);
     customElements.define = function (name, cls) {
-      asNames.add(name);
       cls.prototype.addEventListener = addCEEventListener;
       cls.prototype.removeEventListener = removeCEEventListener;
+      if (asNames.has(name)) return;
+      asNames.add(name);
       oldCED.call(customElements, name, cls);
     };
   }
@@ -316,7 +317,7 @@ const pfFollowUp = `(function () {
         button.removeAttribute("disabled");
     }, {once: true});
 }());`;
-const hashFollowUp = "'sha256-+eYSuiUT4vFULiKEOsbWbgX6fUHW/9QljOozK93OsCk='";
+const hashFollowUp = "'sha256-G3AsV2dLHvRLdskv0GXpr6FbpVYROAQa4rc+zeFrqf0='";
 const customElements = `(function(){'use strict';var n=window.Document.prototype.createElement,p=window.Document.prototype.createElementNS,aa=window.Document.prototype.importNode,ba=window.Document.prototype.prepend,ca=window.Document.prototype.append,da=window.DocumentFragment.prototype.prepend,ea=window.DocumentFragment.prototype.append,q=window.Node.prototype.cloneNode,r=window.Node.prototype.appendChild,t=window.Node.prototype.insertBefore,u=window.Node.prototype.removeChild,v=window.Node.prototype.replaceChild,w=Object.getOwnPropertyDescriptor(window.Node.prototype,
 "textContent"),y=window.Element.prototype.attachShadow,z=Object.getOwnPropertyDescriptor(window.Element.prototype,"innerHTML"),A=window.Element.prototype.getAttribute,B=window.Element.prototype.setAttribute,C=window.Element.prototype.removeAttribute,D=window.Element.prototype.getAttributeNS,E=window.Element.prototype.setAttributeNS,F=window.Element.prototype.removeAttributeNS,G=window.Element.prototype.insertAdjacentElement,H=window.Element.prototype.insertAdjacentHTML,fa=window.Element.prototype.prepend,
 ha=window.Element.prototype.append,ia=window.Element.prototype.before,ja=window.Element.prototype.after,ka=window.Element.prototype.replaceWith,la=window.Element.prototype.remove,ma=window.HTMLElement,I=Object.getOwnPropertyDescriptor(window.HTMLElement.prototype,"innerHTML"),na=window.HTMLElement.prototype.insertAdjacentElement,oa=window.HTMLElement.prototype.insertAdjacentHTML;var pa=new Set;"annotation-xml color-profile font-face font-face-src font-face-uri font-face-format font-face-name missing-glyph".split(" ").forEach(function(a){return pa.add(a)});function qa(a){var b=pa.has(a);a=/^[a-z][.0-9_a-z]*-[-.0-9_a-z]*$/.test(a);return!b&&a}var ra=document.contains?document.contains.bind(document):document.documentElement.contains.bind(document.documentElement);
